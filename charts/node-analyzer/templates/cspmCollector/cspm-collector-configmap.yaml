@@ -1,0 +1,24 @@
+{{- if .Values.cspmCollector.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+  labels:
+{{ include "nodeAnalyzer.labels" . | indent 4 }}
+data:
+{{- if hasKey .Values.cspmCollector "settings" }}
+  k8s_remote: {{ .Values.cspmCollector.settings.k8sRemote | default true }}
+  k8s_host: {{ .Values.cspmCollector.settings.k8sHost | default "" }}
+  {{- if hasKey .Values.cspmCollector.settings "namespaces" }}
+  included_namespaces: {{ .Values.cspmCollector.settings.namespaces.included | default "" }}
+  excluded_namespaces: {{ .Values.cspmCollector.settings.namespaces.excluded | default "" }}
+  {{- end }}
+  {{- if hasKey .Values.cspmCollector.settings "workloads" }}
+  included_workloads: {{ .Values.cspmCollector.settings.workloads.included | default "" }}
+  excluded_workloads: {{ .Values.cspmCollector.settings.workloads.excluded | default "" }}
+  {{- end }}
+  health_interval_minutes: {{ .Values.cspmCollector.settings.healthIntervalMin | default 5 }}
+  environment: {{ .Values.cspmCollector.settings.environemt | default "PRODUCTION" }}
+  external_nats_url: {{ .Values.cspmCollector.settings.externalNatsUrl }}
+{{- end }}
+{{- end }}

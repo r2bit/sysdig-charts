@@ -243,3 +243,49 @@ nodeAnalyzer:
 
       settings:
         replicas: 1
+
+  cspmAnalyzer:
+    deploy: true
+    image:
+      repository: sysdig/cspm-analyzer
+      tag: 1.0.0.0
+      digest:
+      pullPolicy: IfNotPresent
+
+    resources:
+      requests:
+        cpu: 150m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+cspmCollector:
+  deploy: true
+  image:
+    repository: sysdig/cspm-collector
+    tag: 1.0.0.0
+    digest:
+    pullPolicy: IfNotPresent
+  settings:
+    replicas: 1
+    k8sRemote: true
+    k8sHost: ""
+    namespaces:
+      included: ""
+      excluded: ""
+    workloads:
+      included: ""
+      excluded: ""
+    healthIntervalMin: 5
+    externalNatsUrl: "nats-external:4222"
+
+  resources:
+    # Resources required by the cspm collector image. These are some
+    # a sane defaults ones, but you can tweak or ask Sysdig Support for more
+    # info about this
+    requests:
+      cpu: 1000m
+      memory: 348Mi
+    limits:
+      memory: 512Mi

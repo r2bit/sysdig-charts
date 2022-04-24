@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "sysdig.fullname" . }}-cspm-analyzer
+  name: {{ template "nodeAnalyzer.name" . }}-cspm-analyzer
   labels:
-{{ include "sysdig.labels" . | indent 4 }}
+{{ include "nodeAnalyzer.labels" . | indent 4 }}
 data:
   environment: "{{ .Values.nodeAnalyzer.cspmAnalyzer.environemt | default "PRODUCTION" }}"
   {{- if .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}

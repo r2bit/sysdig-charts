@@ -1,0 +1,85 @@
+{{- if .Values.cspmCollector.deploy }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+  labels:
+    app.kubernetes.io/name: {{ include "nodeAnalyzer.name" . }}-cspm-collector
+{{ include "nodeAnalyzer.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.cspmCollector.settings.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "nodeAnalyzer.name" . }}-cspm-collector
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nodeAnalyzer.name" . }}-cspm-collector
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "nodeAnalyzer.labels" . | indent 8 }}
+    spec:
+      serviceAccountName: {{ template "nodeAnalyzer.serviceAccountName" .}}
+      containers:
+      - name: {{ include "nodeAnalyzer.name" . }}-cspm-collector
+        image: {{ template "nodeAnalyzer.image.cspmCollector" . }}
+        imagePullPolicy: {{ .Values.cspmCollector.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.cspmCollector.resources | indent 10 }}
+        env:
+          - name: ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                {{- if not .Values.nodeAnalyzer.existingAccessKeySecret }}
+                name: {{ template "nodeAnalyzer.fullname" . }}
+                {{- else }}
+                name: {{ .Values.nodeAnalyzer.existingAccessKeySecret }}
+                {{- end }}
+                key: access-key
+          - name: CLUSTER_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}
+                key: k8s_cluster_name
+          - name: K8S_REMOTE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: k8s_remote
+          - name: K8S_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: k8s_host
+          - name: INCLUDED_NAMESPACES
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: included_namespaces
+          - name: EXCLUDED_NAMESPACES
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: excluded_namespaces
+          - name: INCLUDED_WORKLOADS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: included_workloads
+          - name: EXCLUDED_WORKLOADS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: excluded_workloads
+          - name: HEALTH_INTERVAL_MINUTES
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: health_interval_minutes
+          - name: ENVIRONMENT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: environment
+{{- end }}
