@@ -1,0 +1,13 @@
+{{- if not .Values.gke.autopilot }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sysdig.fullname" . }}-cspm-analyzer
+  labels:
+{{ include "sysdig.labels" . | indent 4 }}
+data:
+  environment: "{{ .Values.nodeAnalyzer.cspmAnalyzer.environemt | default "PRODUCTION" }}"
+  {{- if .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
+  external_nats_url: {{ .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
+  {{- end -}}
+{{- end }}
