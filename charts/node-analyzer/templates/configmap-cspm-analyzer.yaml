@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "nodeAnalyzer.name" . }}-cspm-analyzer
+  name: {{ template "nodeAnalyzer.fullname" . }}-cspm-analyzer
   labels:
 {{ include "nodeAnalyzer.labels" . | indent 4 }}
 data:
   environment: "{{ .Values.nodeAnalyzer.cspmAnalyzer.environemt | default "PRODUCTION" }}"
-  {{- if .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
-  external_nats_url: {{ .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
-  {{- end -}}
+  external_nats_url: {{ include "nodeAnalyzer.natsUrl" . }}
+  cluster_name: {{ required "A valid .Values.clusterName is required" .Values.clusterName }}
+  agent_app_name: {{ include "nodeAnalyzer.name" . }}-node-analyzer
 {{- end -}}

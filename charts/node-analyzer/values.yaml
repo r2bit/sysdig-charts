@@ -71,6 +71,11 @@ nodeAnalyzer:
   # * On-Prem: sysdig.my.company.com
   apiEndpoint: ""
 
+  # The NATS endpoint url for Sysdig Secure
+  natsUrl: ""
+
+  apiHttpProtocol: "https"
+  
   # Can be set to false to allow insecure connections to the Sysdig backend,
   # such as for on-premise installs that use self-signed certificates.
   # By default, certificates are always verified.
@@ -96,6 +101,8 @@ nodeAnalyzer:
   #   - name: myRegistryKeySecretName
 
   nodeSelector: {}
+
+  dnsPolicy: "Default"
 
   # Allow the DaemonSet to schedule using affinity rules
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -188,6 +195,7 @@ nodeAnalyzer:
         cpu: 500m
         memory: 1536Mi
   benchmarkRunner:
+    deploy: true
     includeSensitivePermissions: false
 
     image:
@@ -245,7 +253,8 @@ nodeAnalyzer:
         replicas: 1
 
   cspmAnalyzer:
-    deploy: true
+    deploy: false
+    environment: "PRODUCTION"
     image:
       repository: sysdig/cspm-analyzer
       tag: 1.0.0.0
@@ -261,13 +270,14 @@ nodeAnalyzer:
         memory: 256Mi
 
 cspmCollector:
-  deploy: true
+  deploy: false
   image:
     repository: sysdig/cspm-collector
     tag: 1.0.0.0
     digest:
     pullPolicy: IfNotPresent
   settings:
+    environment: PRODUCTION
     replicas: 1
     k8sRemote: true
     k8sHost: ""
@@ -278,7 +288,6 @@ cspmCollector:
       included: ""
       excluded: ""
     healthIntervalMin: 5
-    externalNatsUrl: "nats-external:4222"
 
   resources:
     # Resources required by the cspm collector image. These are some

@@ -31,7 +31,7 @@ spec:
           - name: ACCESS_KEY
             valueFrom:
               secretKeyRef:
-                {{- if not .Values.nodeAnalyzer.existingAccessKeySecret }}
+                {{- if not .Values.sysdig.existingAccessKeySecret }}
                 name: {{ template "nodeAnalyzer.fullname" . }}
                 {{- else }}
                 name: {{ .Values.nodeAnalyzer.existingAccessKeySecret }}
@@ -40,8 +40,8 @@ spec:
           - name: CLUSTER_NAME
             valueFrom:
               configMapKeyRef:
-                name: {{ template "nodeAnalyzer.fullname" . }}
-                key: k8s_cluster_name
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: cluster_name
           - name: K8S_REMOTE
             valueFrom:
               configMapKeyRef:
@@ -82,4 +82,9 @@ spec:
               configMapKeyRef:
                 name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
                 key: environment
+          - name: EXTERNAL_NATS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-collector
+                key: external_nats_url
 {{- end }}

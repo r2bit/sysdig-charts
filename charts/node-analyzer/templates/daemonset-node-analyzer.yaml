@@ -82,6 +82,7 @@ spec:
       # This is required for Kubernetes benchmarks, as they contain tests that check Kubernetes processes running on
       # the host
       hostPID: true
+      dnsPolicy: {{ .Values.nodeAnalyzer.dnsPolicy }}
       containers:
 {{ if .Values.nodeAnalyzer.cspmAnalyzer.deploy }}
       - name: sysdig-cspm-analyzer
@@ -102,7 +103,7 @@ spec:
                 {{- else }}
                 name: {{ .Values.nodeAnalyzer.existingAccessKeySecret }}
                 {{- end }}
-            key: access-key
+                key: access-key
           - name: ENVIRONMENT
             valueFrom:
               configMapKeyRef:
@@ -112,12 +113,17 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ template "nodeAnalyzer.fullname" . }}-cspm-analyzer
-                key: external-nats-url
+                key: external_nats_url
           - name: CLUSTER_NAME
             valueFrom:
               configMapKeyRef:
-                name: {{ template "nodeAnalyzer.fullname" . }}
-                key: k8s_cluster_name
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-analyzer
+                key: cluster_name
+          - name: AGENT_APP_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "nodeAnalyzer.fullname" . }}-cspm-analyzer
+                key: agent_app_name
           - name: NODE_NAME
             valueFrom:
               fieldRef:
@@ -347,6 +353,7 @@ spec:
               name: {{ template "nodeAnalyzer.fullname" . }}-host-analyzer
               optional: true
 {{- end }}
+{{- if .Values.nodeAnalyzer.benchmarkRunner.deploy }}
       - name: sysdig-benchmark-runner
         image: {{ template "nodeAnalyzer.image.benchmarkRunner" . }}
         imagePullPolicy: {{ .Values.nodeAnalyzer.benchmarkRunner.image.pullPolicy }}
@@ -512,6 +519,7 @@ spec:
             name: varrun-vol
           - mountPath: /tmp
             name: tmp-vol
+{{- end }}
 # Runtime Scanner #
 {{- end }}
       {{- with .Values.nodeAnalyzer.nodeSelector }}

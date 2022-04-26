@@ -103,14 +103,22 @@ Return the proper image name for the Benchmark Runner
 Return the proper image name for the CSPM Analyzer
 */}}
 {{- define "nodeAnalyzer.image.cspmAnalyzer" -}}
+{{- if eq .Values.nodeAnalyzer.cspmAnalyzer.environment "DEVELOPMENT" }}
+    {{- .Values.nodeAnalyzer.cspmAnalyzer.image.repository -}} {{- if .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmAnalyzer.image.tag -}} {{- end -}}
+{{- else -}}
     {{- include "nodeAnalyzer.imageRegistry" . -}} / {{- .Values.nodeAnalyzer.cspmAnalyzer.image.repository -}} {{- if .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmAnalyzer.image.tag -}} {{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Return the proper image name for the CSPM Collector
 */}}
 {{- define "nodeAnalyzer.image.cspmCollector" -}}
+{{- if eq .Values.cspmCollector.settings.environment "DEVELOPMENT" }}
+    {{- .Values.cspmCollector.image.repository -}} {{- if .Values.cspmCollector.image.digest -}} @ {{- .Values.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.cspmCollector.image.tag -}} {{- end -}}
+{{- else -}}
     {{- include "nodeAnalyzer.imageRegistry" . -}} / {{- .Values.cspmCollector.image.repository -}} {{- if .Values.cspmCollector.image.digest -}} @ {{- .Values.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.cspmCollector.image.tag -}} {{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -192,4 +200,15 @@ Determine collector endpoint based on provided region or .Values.nodeAnalyzer.ap
     {{- else if (eq .Values.global.sysdig.region "au1") -}}
         {{- "app.au1.sysdig.com" -}}
     {{- end -}}
+{{- end -}}
+
+{{/*
+Sysdig NATS service URL
+*/}}
+{{- define "nodeAnalyzer.natsUrl" -}}
+{{- if .Values.nodeAnalyzer.natsUrl -}}
+    {{- .Values.nodeAnalyzer.natsUrl -}}
+{{- else -}}
+    {{ .Values.nodeAnalyzer.apiHttpProtocol }}://cspm-agent-{{- include "nodeAnalyzer.apiEndpoint" . -}}
+{{- end -}}
 {{- end -}}

@@ -117,6 +117,8 @@ rules:
       - "rolebindings"
       - "serviceaccounts"
       - "ingresses"
+      - "networkpolicies"
+      - "services"
     verbs:
       - "get"
       - "list"
