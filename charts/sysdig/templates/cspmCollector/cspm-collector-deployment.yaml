@@ -40,8 +40,8 @@ spec:
           - name: CLUSTER_NAME
             valueFrom:
               configMapKeyRef:
-                name: {{ template "sysdig.fullname" . }}
-                key: k8s_cluster_name
+                name: {{ template "sysdig.fullname" . }}-cspm-collector
+                key: cluster_name
           - name: K8S_REMOTE
             valueFrom:
               configMapKeyRef:
@@ -82,4 +82,9 @@ spec:
               configMapKeyRef:
                 name: {{ template "sysdig.fullname" . }}-cspm-collector
                 key: environment
+          - name: EXTERNAL_NATS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "sysdig.fullname" . }}-cspm-collector
+                key: external_nats_url
 {{- end }}

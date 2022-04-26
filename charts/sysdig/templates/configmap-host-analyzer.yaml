@@ -8,7 +8,7 @@ metadata:
   labels:
 {{ include "sysdig.labels" . | indent 4 }}
 data:
-  collector_endpoint: "https://{{ .Values.nodeAnalyzer.apiEndpoint | default .Values.nodeAnalyzer.collectorEndpoint }}/internal/scanning/scanning-analysis-collector"
+  collector_endpoint: "{{ .Values.nodeAnalyzer.apiHttpProtocol }}://{{ .Values.nodeAnalyzer.apiEndpoint | default .Values.nodeAnalyzer.collectorEndpoint }}/internal/scanning/scanning-analysis-collector"
   {{- if .Values.nodeAnalyzer.collectorTimeout }}
   collector_timeout: {{ .Values.nodeAnalyzer.collectorTimeout }}
   {{- end }}

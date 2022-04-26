@@ -107,13 +107,16 @@ rules:
 {{- end }}
 {{- if .Values.cspmCollector.deploy  }}
   - apiGroups:
+      - ""
       - "rbac.authorization.k8s.io"
+      - "networking.k8s.io"
     resources:
       - "clusterroles"
       - "clusterrolebindings"
       - "roles"
       - "rolebindings"
       - "serviceaccounts"
+      - "ingresses"
     verbs:
       - "get"
       - "list"

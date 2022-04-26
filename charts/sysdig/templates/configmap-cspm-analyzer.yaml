@@ -7,7 +7,7 @@ metadata:
 {{ include "sysdig.labels" . | indent 4 }}
 data:
   environment: "{{ .Values.nodeAnalyzer.cspmAnalyzer.environemt | default "PRODUCTION" }}"
-  {{- if .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
-  external_nats_url: {{ .Values.nodeAnalyzer.cspmAnalyzer.externalNatsUrl }}
-  {{- end -}}
+  external_nats_url: {{ include "sysdig.nodeAnalyzer.natsUrl" . }}
+  cluster_name: {{ required "A valid .Values.clusterName is required" .Values.clusterName }}
+  agent_app_name: {{ include "sysdig.name" . }}-node-analyzer
 {{- end -}}
