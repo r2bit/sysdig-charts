@@ -6,14 +6,17 @@ metadata:
   labels:
 {{ include "nodeAnalyzer.labels" . | indent 4 }}
 data:
-  k8s_remote: {{ .Values.cspmCollector.settings.k8sRemote | quote }}
+{{- $env := "PRODUCTION" -}}
+{{ if .Values.cspmCollector.settings.debug }}
+  {{- $env = "DEVELOPMENT" -}}
+{{ end}}
+  environment: {{ $env }}
   k8s_host: {{ .Values.cspmCollector.settings.k8sHost | quote }}
   included_namespaces: {{ .Values.cspmCollector.settings.namespaces.included | quote}}
   excluded_namespaces: {{ .Values.cspmCollector.settings.namespaces.excluded | quote }}
   included_workloads: {{ .Values.cspmCollector.settings.workloads.included | quote }}
   excluded_workloads: {{ .Values.cspmCollector.settings.workloads.excluded | quote }}
   health_interval_minutes: {{ .Values.cspmCollector.settings.healthIntervalMin | default 5 | quote }}
-  environment: {{ .Values.cspmCollector.settings.environment | default "PRODUCTION" }}
   external_nats_url: {{ include "nodeAnalyzer.natsUrl" . }}
   cluster_name: {{ required "A valid .Values.clusterName is required" .Values.clusterName }}
 {{- end }}

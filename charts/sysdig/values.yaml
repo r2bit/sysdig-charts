@@ -516,10 +516,10 @@ nodeAnalyzer:
 
   cspmAnalyzer:
     deploy: false
-    environment: "PRODUCTION"
+    debug: false
     image:
       repository: sysdig/cspm-analyzer
-      tag: 1.0.0.0
+      tag: 1.0.0
       digest:
       pullPolicy: IfNotPresent
 
@@ -571,16 +571,15 @@ extraVolumes:
 
 cspmCollector:
   deploy: false
+  debug: false
   image:
     repository: sysdig/cspm-collector
-    tag: 1.0.0.0
+    tag: 1.0.0
     digest:
     pullPolicy: IfNotPresent
   settings:
     environment: PRODUCTION
     replicas: 1
-    k8sRemote: true
-    k8sHost: ""
     namespaces:
       included: ""
       excluded: ""

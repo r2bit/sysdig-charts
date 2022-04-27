@@ -64,6 +64,9 @@ nodeAnalyzer:
 
   deploy: true
 
+  # The API http protocol for Sysdig Secure
+  apiHttpProtocol: "https"
+
   # The API endpoint for Sysdig Secure, specified with no protocol:
   # * SaaS default region (US East): secure.sysdig.com
   # * SaaS US Web: us2.app.sysdig.com
@@ -71,10 +74,8 @@ nodeAnalyzer:
   # * On-Prem: sysdig.my.company.com
   apiEndpoint: ""
 
-  # The NATS endpoint url for Sysdig Secure
+  # The NATS service endpoint url for Sysdig Secure
   natsUrl: ""
-
-  apiHttpProtocol: "https"
   
   # Can be set to false to allow insecure connections to the Sysdig backend,
   # such as for on-premise installs that use self-signed certificates.
@@ -254,10 +255,10 @@ nodeAnalyzer:
 
   cspmAnalyzer:
     deploy: false
-    environment: "PRODUCTION"
+    debug: false
     image:
       repository: sysdig/cspm-analyzer
-      tag: 1.0.0.0
+      tag: 1.0.0
       digest:
       pullPolicy: IfNotPresent
 
@@ -271,16 +272,15 @@ nodeAnalyzer:
 
 cspmCollector:
   deploy: false
+  debug: false
   image:
     repository: sysdig/cspm-collector
-    tag: 1.0.0.0
+    tag: 1.0.0
     digest:
     pullPolicy: IfNotPresent
   settings:
     environment: PRODUCTION
     replicas: 1
-    k8sRemote: true
-    k8sHost: ""
     namespaces:
       included: ""
       excluded: ""
