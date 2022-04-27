@@ -99,7 +99,7 @@ rules:
   verbs:
     - "use"
 {{- end }}
-{{- if .Values.cspmCollector.deploy  }}
+{{- if .Values.nodeAnalyzer.cspmCollector.deploy  }}
 - apiGroups:
     - ""
     - "rbac.authorization.k8s.io"

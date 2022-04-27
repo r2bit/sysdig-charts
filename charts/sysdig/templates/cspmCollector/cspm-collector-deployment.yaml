@@ -1,4 +1,4 @@
-{{- if .Values.cspmCollector.deploy }}
+{{- if .Values.nodeAnalyzer.cspmCollector.deploy }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: {{ include "sysdig.name" . }}-cspm-collector
 {{ include "sysdig.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.cspmCollector.settings.replicas }}
+  replicas: {{ .Values.nodeAnalyzer.cspmCollector.settings.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "sysdig.name" . }}-cspm-collector
@@ -24,9 +24,9 @@ spec:
       containers:
       - name: {{ include "sysdig.name" . }}-cspm-collector
         image: {{ template "sysdig.image.cspmCollector" . }}
-        imagePullPolicy: {{ .Values.cspmCollector.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.nodeAnalyzer.cspmCollector.image.pullPolicy }}
         resources:
-{{ toYaml .Values.cspmCollector.resources | indent 10 }}
+{{ toYaml .Values.nodeAnalyzer.cspmCollector.resources | indent 10 }}
         env:
           - name: ACCESS_KEY
             valueFrom:

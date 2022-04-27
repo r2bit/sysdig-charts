@@ -103,7 +103,7 @@ Return the proper image name for the Benchmark Runner
 Return the proper image name for the CSPM Analyzer
 */}}
 {{- define "nodeAnalyzer.image.cspmAnalyzer" -}}
-{{- if eq .Values.nodeAnalyzer.cspmAnalyzer.environment "DEVELOPMENT" }}
+{{- if .Values.nodeAnalyzer.cspmAnalyzer.debug  }}
     {{- .Values.nodeAnalyzer.cspmAnalyzer.image.repository -}} {{- if .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmAnalyzer.image.tag -}} {{- end -}}
 {{- else -}}
     {{- include "nodeAnalyzer.imageRegistry" . -}} / {{- .Values.nodeAnalyzer.cspmAnalyzer.image.repository -}} {{- if .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmAnalyzer.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmAnalyzer.image.tag -}} {{- end -}}
@@ -114,10 +114,10 @@ Return the proper image name for the CSPM Analyzer
 Return the proper image name for the CSPM Collector
 */}}
 {{- define "nodeAnalyzer.image.cspmCollector" -}}
-{{- if eq .Values.cspmCollector.settings.environment "DEVELOPMENT" }}
-    {{- .Values.cspmCollector.image.repository -}} {{- if .Values.cspmCollector.image.digest -}} @ {{- .Values.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.cspmCollector.image.tag -}} {{- end -}}
+{{- if .Values.nodeAnalyzer.cspmCollector.settings.debug  }}
+    {{- .Values.nodeAnalyzer.cspmCollector.image.repository -}} {{- if .Values.nodeAnalyzer.cspmCollector.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmCollector.image.tag -}} {{- end -}}
 {{- else -}}
-    {{- include "nodeAnalyzer.imageRegistry" . -}} / {{- .Values.cspmCollector.image.repository -}} {{- if .Values.cspmCollector.image.digest -}} @ {{- .Values.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.cspmCollector.image.tag -}} {{- end -}}
+    {{- include "nodeAnalyzer.imageRegistry" . -}} / {{- .Values.nodeAnalyzer.cspmCollector.image.repository -}} {{- if .Values.nodeAnalyzer.cspmCollector.image.digest -}} @ {{- .Values.nodeAnalyzer.cspmCollector.image.digest -}} {{- else -}} : {{- .Values.nodeAnalyzer.cspmCollector.image.tag -}} {{- end -}}
 {{- end -}}
 {{- end -}}
 

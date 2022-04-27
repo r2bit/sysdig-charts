@@ -6,21 +6,29 @@ and [Sysdig Inspect](https://sysdig.com/blog/sysdig-inspect/) open-source techno
 
 
 ## Table of Contents
-- [Introduction](#introduction)
-- [Prerequisites](#prerequisites)
-- [Installing the Chart](#installing-the-chart)
-- [Uninstalling the Chart](#uninstalling-the-chart)
-- [Configuration](#configuration)
-- [Resource profiles](#resource-profiles)
-- [Node Analyzer](#node-analyzer)
-- [GKE Autopilot](#gke-autopilot)
-- [On-Premise backend deployment settings](#on-premise-backend-deployment-settings)
-- [Using private Docker image registry](#using-private-docker-image-registry)
-- [Modifying Sysdig agent configuration](#modifying-sysdig-agent-configuration)
-- [Upgrading Sysdig agent configuration](#upgrading-sysdig-agent-configuration)
-- [How to upgrade to the latest version](#how-to-upgrade-to-the-last-version)
-- [Adding custom AppChecks](#adding-custom-appchecks)
-- [Support](#support)
+- [Chart: Sysdig](#chart-sysdig)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Prerequisites](#prerequisites)
+  - [Installing the Chart](#installing-the-chart)
+  - [Uninstalling the Chart](#uninstalling-the-chart)
+  - [Configuration](#configuration)
+  - [Resource profiles](#resource-profiles)
+  - [Node Analyzer](#node-analyzer)
+    - [Node Image Analyzer](#node-image-analyzer)
+    - [Host Analyzer](#host-analyzer)
+    - [Benchmark Runner](#benchmark-runner)
+  - [GKE Autopilot](#gke-autopilot)
+  - [On-Premise backend deployment settings](#on-premise-backend-deployment-settings)
+  - [Using private Docker image registry](#using-private-docker-image-registry)
+  - [Modifying Sysdig agent configuration](#modifying-sysdig-agent-configuration)
+  - [Upgrading Sysdig agent configuration](#upgrading-sysdig-agent-configuration)
+  - [How to upgrade to the last version](#how-to-upgrade-to-the-last-version)
+  - [Adding custom AppChecks](#adding-custom-appchecks)
+    - [Automating the generation of custom-app-checks.yaml file](#automating-the-generation-of-custom-app-checksyaml-file)
+    - [Adding prometheus.yaml to configure promscrape](#adding-prometheusyaml-to-configure-promscrape)
+    - [Adding additional volumes](#adding-additional-volumes)
+  - [Support](#support)
 
 ## Introduction
 
@@ -192,6 +200,32 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `nodeAnalyzer.runtimeScanner.eveConnector.resources.limits.cpu`      | Eve Connector CPU limits per node                                                        | `1000m`                                                                        |
 | `nodeAnalyzer.runtimeScanner.eveConnector.resources.limits.memory`   | Eve Connector Memory limits per node                                                     | `512Mi`                                                                        |
 | `nodeAnalyzer.runtimeScanner.eveConnector.settings.replicas`         | Eve Connector deployment replicas                                                        | `1`                                                                            |
+| `nodeAnalyzer.cspmAnalyzer.deploy`                                   | Enables Sysdig CSPM node analyzer                                                        | `false`                                                                        |
+| `nodeAnalyzer.cspmAnalyzer.debug`                                    | Can be set to true to show CSPM node analyzer debug logging, useful for troubleshooting  | `false`                                                                        |
+| `nodeAnalyzer.cspmAnalyzer.image.repository`                         | The image repository to pull the  CSPM node analyzer from                                | `sysdig/cspm-analyzer`                                                         |
+| `nodeAnalyzer.cspmAnalyzer.image.tag`                                | The image tag to pull the  CSPM node analyzer                                            | `1.0.0`                                                                        |
+| `nodeAnalyzer.cspmAnalyzer.image.digest`                             | The image digest to pull                                                                 | ` `                                                                            |
+| `nodeAnalyzer.cspmAnalyzer.image.pullPolicy`                         | The image pull policy for the  CSPM node analyzer                                        | `IfNotPresent`                                                                 |
+| `nodeAnalyzer.cspmAnalyzer.resources.requests.cpu`                   | CSPM node analyzer CPU requests per node                                                 | `150m`                                                                         |
+| `nodeAnalyzer.cspmAnalyzer.resources.requests.memory`                | CSPM node analyzer Memory requests per node                                              | `128Mi`                                                                        |
+| `nodeAnalyzer.cspmAnalyzer.resources.limits.cpu`                     | CSPM node analyzer CPU limits per node                                                   | `500m`                                                                         |
+| `nodeAnalyzer.cspmAnalyzer.resources.limits.memory`                  | CSPM node analyzer Memory limits per node                                                | `256Mi`                                                                        |
+| `nodeAnalyzer.cspmCollector.deploy`                                  | Enables Sysdig CSPM collector                                                            | `false`                                                                        |
+| `nodeAnalyzer.cspmCollector.debug`                                   | Can be set to true to show CSPM collector debug logging, useful for troubleshooting      | `false`                                                                        |
+| `nodeAnalyzer.cspmCollector.image.repository`                        | The image repository to pull the  CSPM collector from                                    | `sysdig/cspm-collector`                                                        |
+| `nodeAnalyzer.cspmCollector.image.tag`                               | The image tag to pull the  CSPM collector                                                | `1.0.0`                                                                        |
+| `nodeAnalyzer.cspmCollector.image.digest`                            | The image digest to pull                                                                 | ` `                                                                            |
+| `nodeAnalyzer.cspmCollector.image.pullPolicy`                        | The image pull policy for the  CSPM collector                                            | `IfNotPresent`                                                                 |
+| `nodeAnalyzer.cspmCollector.settings.replicas`                       | CSPM collector deployment replicas                                                       | `1`                                                                            |
+| `nodeAnalyzer.cspmCollector.settings.namespaces.included`            | Namespaces to include in the CSPM collector scans, when empty scans all                  | ``                                                                             |
+| `nodeAnalyzer.cspmCollector.settings.namespaces.excluded`            | Namespaces to exclude in the CSPM collector scans                                        | ``                                                                             |
+| `nodeAnalyzer.cspmCollector.settings.workloads.included`             | Workloads to include in the CSPM collector scans, when empty scans all                   | ``                                                                             |
+| `nodeAnalyzer.cspmCollector.settings.workloads.excluded`             | Workloads to exclude in the CSPM collector scans, when empty scans all                   | ``                                                                             |
+| `nodeAnalyzer.cspmCollector.settings.healthIntervalMin`              | Minutes interval for CSPM collector health status messages                               | `5`                                                                            |
+| `nodeAnalyzer.cspmCollector.resources.requests.cpu`                  | CSPM collector CPU requests per node                                                     | `1000m`                                                                        |
+| `nodeAnalyzer.cspmCollector.resources.requests.memory`               | CSPM collector Memory requests per node                                                  | `348Mi`                                                                        |
+| `nodeAnalyzer.cspmCollector.resources.limits.cpu`                    | CSPM collector CPU limits per node                                                       | `500m`                                                                         |
+| `nodeAnalyzer.cspmCollector.resources.limits.memory`                 | CSPM collector Memory limits per node                                                    | `512Mi`                                                                        |
 | `nodeAnalyzer.nodeSelector`                                          | Node Selector                                                                            | `{}`                                                                           |
 | `nodeAnalyzer.affinity`                                              | Node affinities                                                                          | `schedule on amd64 and linux`                                                  |
 

@@ -1,4 +1,4 @@
-{{- if .Values.cspmCollector.deploy }}
+{{- if .Values.nodeAnalyzer.cspmCollector.deploy }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,16 +7,16 @@ metadata:
 {{ include "sysdig.labels" . | indent 4 }}
 data:
 {{- $env := "PRODUCTION" -}}
-{{ if .Values.cspmCollector.settings.debug }}
+{{ if .Values.nodeAnalyzer.cspmCollector.settings.debug }}
   {{- $env = "DEVELOPMENT" -}}
 {{ end}}
   environment: {{ $env }}
-  k8s_host: {{ .Values.cspmCollector.settings.k8sHost | quote }}
-  included_namespaces: {{ .Values.cspmCollector.settings.namespaces.included | quote}}
-  excluded_namespaces: {{ .Values.cspmCollector.settings.namespaces.excluded | quote }}
-  included_workloads: {{ .Values.cspmCollector.settings.workloads.included | quote }}
-  excluded_workloads: {{ .Values.cspmCollector.settings.workloads.excluded | quote }}
-  health_interval_minutes: {{ .Values.cspmCollector.settings.healthIntervalMin | default 5 | quote }}
+  k8s_host: {{ .Values.nodeAnalyzer.cspmCollector.settings.k8sHost | quote }}
+  included_namespaces: {{ .Values.nodeAnalyzer.cspmCollector.settings.namespaces.included | quote}}
+  excluded_namespaces: {{ .Values.nodeAnalyzer.cspmCollector.settings.namespaces.excluded | quote }}
+  included_workloads: {{ .Values.nodeAnalyzer.cspmCollector.settings.workloads.included | quote }}
+  excluded_workloads: {{ .Values.nodeAnalyzer.cspmCollector.settings.workloads.excluded | quote }}
+  health_interval_minutes: {{ .Values.nodeAnalyzer.cspmCollector.settings.healthIntervalMin | default 5 | quote }}
   external_nats_url: {{ include "sysdig.nodeAnalyzer.natsUrl" . }}
   cluster_name: {{ required "A valid .Values.clusterName is required" .Values.clusterName }}
 {{- end }}
