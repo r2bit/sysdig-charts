@@ -282,6 +282,6 @@ Sysdig NATS service URL
 {{- if .Values.nodeAnalyzer.natsUrl -}}
     {{- .Values.nodeAnalyzer.natsUrl -}}
 {{- else -}}
-    {{ .Values.nodeAnalyzer.apiHttpProtocol }}://{{ .Values.nodeAnalyzer.apiEndpoint | default .Values.nodeAnalyzer.collectorEndpoint }}/cspm-agent
+    {{ .Values.nodeAnalyzer.apiHttpProtocol }}://{{ .Values.nodeAnalyzer.apiEndpoint }}/cspm-agent
 {{- end -}}
 {{- end -}}
